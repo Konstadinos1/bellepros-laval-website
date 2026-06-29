@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════
+  BELLEPROS LAVAL 440 — High-Conversion QSR Website
+  Stack: HTML5 + Tailwind CSS (CDN) + Vanilla JS
+  Bilingual: EN/FR toggle via data attributes
+  All order CTAs → Lightspeed ordering platform
+  ═══════════════════════════════════════════════════════════════
+-->
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bellepro's Laval — Poutine, Burgers & Smoked Meat | Casse-Croûte Autoroute 440</title>
+  <meta name="description" content="Le meilleur casse-croûte de Laval! Poutine, burgers, smoked meat, sous-marins. Sur l'autoroute 440. Livraison DoorDash. Ouvert 7 jours.">
+  <meta name="theme-color" content="#C8102E" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bellepro's Laval | Poutine • Burgers • Smoked Meat" />
+  <meta property="og:description" content="Order online for fast pickup right off the 440 in Laval, or get delivery via DoorDash." />
+  <meta property="og:type" content="website" />
+  <!-- TODO: Replace with Bellepros Laval logo -->
+  <meta property="og:image" content="https://belleproslaval.ca/logo.png" />
+  <meta property="og:url" content="https://belleproslaval.ca" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Anton (display), Oswald (headings), Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind Config: Brand Color System -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-red':       '#C8102E',
+            'brand-red-dark':  '#9B0E24',
+            'brand-red-light': '#E82042',
+            'brand-charcoal':  '#1A1A2E',
+            'brand-charcoal-light': '#2D2D44',
+            'brand-gold':      '#FFB81C',
+            'brand-gold-dark': '#E0A012',
+            'brand-cream':     '#FFF8F0',
+            'brand-cream-dark':'#F5EDE0',
+          },
+          fontFamily: {
+            'display': ['Anton', 'sans-serif'],
+            'heading': ['Oswald', 'sans-serif'],
+            'body':    ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.6s ease-out forwards',
+            'slide-down': 'slideDown 0.3s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%':   { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideDown: {
+              '0%':   { opacity: '0', transform: 'translateY(-10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom CSS -->
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
+
+    .font-display { font-family: 'Anton', sans-serif; letter-spacing: 0.02em; }
+    .font-heading { font-family: 'Oswald', sans-serif; }
+
+    /* Hero gradient overlay */
+    .hero-overlay {
+      background: linear-gradient(135deg, rgba(26,26,46,0.92) 0%, rgba(200,16,46,0.78) 100%);
+    }
+
+    /* Scroll reveal — elements start hidden, JS reveals on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Menu card hover */
+    .menu-card {
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+    }
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.35);
+    }
+    .menu-card:hover .menu-img {
+      transform: scale(1.08);
+    }
+    .menu-img {
+      transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    /* CTA button glow */
+    .cta-glow {
+      box-shadow: 0 0 0 0 rgba(255,184,28,0.6);
+      animation: ctaPulse 2.5s infinite;
+    }
+    @keyframes ctaPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(255,184,28,0.5); }
+      70%  { box-shadow: 0 0 0 14px rgba(255,184,28,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,184,28,0); }
+    }
+
+    /* Lang toggle switch */
+    .lang-switch {
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Mobile nav */
+    #mobile-nav { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+    #mobile-nav.open { max-height: 500px; }
+
+    /* Nav shadow on scroll */
+    #navbar.scrolled {
+      background-color: rgba(26,26,46,0.98);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    /* Hide scrollbar for menu scroll on mobile */
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+
+  <!-- Schema Markup (JSON-LD) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Bellepro's Laval",
+      "image": "https://belleproslaval.ca/logo.png",
+      "url": "https://belleproslaval.ca",
+      "telephone": "+15145737441",
+      "priceRange": "$$",
+      "servesCuisine": ["Poutine", "Canadian", "Fast Food", "Quebecois"],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "5600 Boulevard Robert-Bourassa",
+        "addressLocality": "Laval",
+        "addressRegion": "QC",
+        "postalCode": "H7E 0A1",
+        "addressCountry": "CA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 45.5035,
+        "longitude": -73.5705
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Sunday"],
+          "opens": "10:30",
+          "closes": "23:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Friday","Saturday"],
+          "opens": "10:30",
+          "closes": "23:59"
+        }
+      ],
+      "menu": "https://mylightspeed.app/XURCMOEX/C-ordering/menu",
+      "acceptsReservations": "False",
+      "hasMenu": {
+        "@type": "Menu",
+        "hasMenuSection": [
+          {
+            "@type": "MenuSection",
+            "name": "Poutines",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Poutine Classique", "description": "Frites, curds frais, sauce maison" },
+              { "@type": "MenuItem", "name": "Poutine Italienne" },
+              { "@type": "MenuItem", "name": "Poutine Toute Garnie" },
+              { "@type": "MenuItem", "name": "Poutine Bacon" },
+              { "@type": "MenuItem", "name": "Poutine Viande Fumée" }
+            ]
+          },
+          {
+            "@type": "MenuSection",
+            "name": "Burgers",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Hamburger" },
+              { "@type": "MenuItem", "name": "Cheeseburger" },
+              { "@type": "MenuItem", "name": "Bellepros Deluxe Burger" },
+              { "@type": "MenuItem", "name": "Philly Steak Burger" }
+            ]
+          },
+          {
+            "@type": "MenuSection",
+            "name": "Smoked Meat",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Sandwich Smoked Meat", "description": "Tranches de viande fumée style Montréal" },
+              { "@type": "MenuItem", "name": "Assiette Smoked Meat" }
+            ]
+          },
+          {
+            "@type": "MenuSection",
+            "name": "Hot Dogs",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Steamie" },
+              { "@type": "MenuItem", "name": "Toastie" },
+              { "@type": "MenuItem", "name": "Michigan" },
+              { "@type": "MenuItem", "name": "Bacon Cheese Dog" }
+            ]
+          },
+          {
+            "@type": "MenuSection",
+            "name": "Sous-Marins",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Sous-Marin Classique" },
+              { "@type": "MenuItem", "name": "Super Sub Spécial" },
+              { "@type": "MenuItem", "name": "Sous-Marin Philly Steak" }
+            ]
+          },
+          {
+            "@type": "MenuSection",
+            "name": "Gyros & Pitas",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Pita Gyro" },
+              { "@type": "MenuItem", "name": "Assiette Gyro" }
+            ]
+          },
+          {
+            "@type": "MenuSection",
+            "name": "Accompagnements",
+            "hasMenuItem": [
+              { "@type": "MenuItem", "name": "Frites" },
+              { "@type": "MenuItem", "name": "Rondelles d'Oignons" },
+              { "@type": "MenuItem", "name": "Salade de Chou" }
+            ]
+          }
+        ]
+      },
+      "sameAs": [
+        "https://www.instagram.com/belleproslaval",
+        "https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/",
+        "https://www.bellepros.com"
+      ]
+    }
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Quelle est la meilleure poutine à Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bellepro's Laval offre la meilleure poutine de Laval avec des curds frais de fromagerie québécoise, des frites dorées et une sauce maison préparée fraîche chaque jour. Venez découvrir pourquoi nos clients nous adorent sur l'autoroute 440."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Où manger une poutine tard le soir à Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bellepro's Laval, situé au 5600 Boulevard Robert-Bourassa, Laval, QC, est ouvert jusqu'à 23h en semaine et minuit les vendredis et samedis. C'est l'endroit idéal pour une poutine ou un casse-croûte tard le soir sur l'autoroute 440. Livraison également disponible sur DoorDash."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quel casse-croûte est ouvert tard sur l'autoroute 440?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bellepro's Laval est votre casse-croûte de choix sur l'autoroute 440, ouvert tard pour satisfaire vos envies. Profitez de nos burgers, poutines, hot dogs et plus, avec des heures prolongées les week-ends."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Où trouver du smoked meat style Montréal à Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pour un smoked meat authentique style Montréal à Laval, ne cherchez pas plus loin que Bellepro's Laval. Nos sandwiches sont préparés avec de la viande fumée tranchée à la main, pour une expérience gustative inoubliable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quel restaurant livre de la poutine sur DoorDash à Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bellepro's Laval livre de la délicieuse poutine et tous vos plats préférés directement à votre porte via DoorDash. Commandez facilement en ligne pour une livraison rapide à travers Laval: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels sont les meilleurs burgers smash à Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bellepro's Laval est réputé pour ses burgers smash à Laval. Des galettes croustillantes, du fromage fondant et des garnitures fraîches, servis sur un pain brioché grillé à la perfection. Le burger smash parfait vous attend."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Où manger un bon sous-marin à Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pour un sous-marin savoureux à Laval, visitez Bellepro's Laval. Nous proposons une variété de sous-marins classiques et spéciaux, préparés avec des ingrédients frais et de qualité, parfaits pour un repas rapide et délicieux."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bellepro's Laval propose quoi au menu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le menu de Bellepro's Laval est vaste et inclut des poutines variées, des burgers smash, du smoked meat, des hot dogs classiques (steamies, toasties), des gyros, des pogos et plus encore. Il y en a pour tous les goûts, toujours préparé avec des ingrédients frais."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quelles sont les heures d'ouverture de Bellepro's Laval?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bellepro's Laval est ouvert 7 jours sur 7. Du lundi au jeudi et le dimanche, nous sommes ouverts de 10h30 à 23h00. Les vendredis et samedis, profitez de nos services prolongés jusqu'à minuit (23h59)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bellepro's Laval offre-t-il la livraison?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui, Bellepro's Laval offre la livraison à domicile via DoorDash. Vous pouvez commander directement depuis notre menu en ligne sur DoorDash et vous faire livrer vos plats préférés rapidement à Laval: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/"
+          }
+        }
+      ]
+    }
+  </script>
+
+</head>
+
+<!-- ─────────────────────────────────────────────── -->
+<body class="bg-brand-cream text-brand-charcoal antialiased">
+
+  <!-- ═══ NAVIGATION ═══ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+
+        <!-- Logo -->
+        <a href="#hero" class="flex items-center gap-2">
+          <span class="font-display text-2xl md:text-3xl text-white tracking-wider">
+            BELLEPRO'S
+          </span>
+          <span class="font-display text-xl md:text-2xl text-brand-gold tracking-wider">
+            LAVAL
+          </span>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#features"  class="font-heading text-white/90 hover:text-brand-gold transition-colors uppercase tracking-wide text-sm font-semibold" data-en="Why Us"        data-fr="Pourquoi Nous"></a>
+          <a href="#menu"      class="font-heading text-white/90 hover:text-brand-gold transition-colors uppercase tracking-wide text-sm font-semibold" data-en="Menu"         data-fr="Menu"></a>
+          <a href="#faq"       class="font-heading text-white/90 hover:text-brand-gold transition-colors uppercase tracking-wide text-sm font-semibold" data-en="FAQ"          data-fr="FAQ"></a>
+          <a href="#location"  class="font-heading text-white/90 hover:text-brand-gold transition-colors uppercase tracking-wide text-sm font-semibold" data-en="Find Us"      data-fr="Nous Trouver"></a>
+
+          <!-- Language Toggle -->
+          <button id="lang-toggle" class="lang-switch flex items-center gap-1 bg-white/10 rounded-full px-3 py-1.5 text-sm font-bold text-white hover:bg-white/20 transition-colors">
+            <span id="lang-en" class="text-brand-gold">EN</span>
+            <span class="text-white/40">|</span>
+            <span id="lang-fr" class="text-white/60">FR</span>
+          </button>
+
+          <!-- Order Button (Desktop) -->
+          <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+             class="bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-heading font-bold uppercase tracking-wide px-6 py-2.5 rounded-lg transition-all hover:scale-105 text-sm shadow-lg">
+            <span data-en="Order Now" data-fr="Commander">Order Now</span>
+          </a>
+        </div>
+
+        <!-- Mobile: Lang Toggle + Hamburger -->
+        <div class="flex md:hidden items-center gap-3">
+          <button id="lang-toggle-mobile" class="lang-switch flex items-center gap-1 bg-white/10 rounded-full px-2.5 py-1 text-xs font-bold text-white">
+            <span class="lang-en-m text-brand-gold">EN</span>
+            <span class="text-white/40">|</span>
+            <span class="lang-fr-m text-white/60">FR</span>
+          </button>
+          <button id="hamburger" class="text-white p-2" aria-label="Toggle menu">
+            <svg id="icon-open"  class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <svg id="icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobile-nav" class="md:hidden bg-brand-charcoal/98 backdrop-blur-md">
+      <div class="px-6 py-6 space-y-4">
+        <a href="#features"  class="block font-heading text-white/90 hover:text-brand-gold uppercase tracking-wide font-semibold" data-en="Why Us"     data-fr="Pourquoi Nous">Why Us</a>
+        <a href="#menu"      class="block font-heading text-white/90 hover:text-brand-gold uppercase tracking-wide font-semibold" data-en="Menu"      data-fr="Menu">Menu</a>
+        <a href="#faq"       class="block font-heading text-white/90 hover:text-brand-gold uppercase tracking-wide font-semibold" data-en="FAQ"       data-fr="FAQ">FAQ</a>
+        <a href="#location"  class="block font-heading text-white/90 hover:text-brand-gold uppercase tracking-wide font-semibold" data-en="Find Us"   data-fr="Nous Trouver">Find Us</a>
+        <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+           class="block text-center bg-brand-gold text-brand-charcoal font-heading font-bold uppercase px-6 py-3 rounded-lg text-base">
+          <span data-en="Order Now" data-fr="Commander">Order Now</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background Image Placeholder — Replace src with professional food photography -->
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=1920&q=80"
+           alt="Gourmet poutine close-up"
+           class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 hero-overlay"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 bg-brand-gold/20 backdrop-blur border border-brand-gold/40 rounded-full px-4 py-2 mb-6 animate-fade-in-up">
+        <span class="w-2 h-2 bg-brand-gold rounded-full animate-pulse"></span>
+        <span class="font-heading text-brand-gold text-xs sm:text-sm uppercase tracking-widest font-semibold"
+              data-en="Right off Highway 440 • Laval" data-fr="Directement sur l'Autoroute 440 • Laval">
+          Right off Highway 440 • Laval
+        </span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="font-display text-5xl sm:text-7xl md:text-8xl text-white leading-none mb-4 animate-fade-in-up"
+          style="animation-delay:0.1s; animation-fill-mode: backwards;">
+        <span data-en="QUEBEC COMFORT" data-fr="CUISINE RÉCONFORT">QUEBEC COMFORT</span><br/>
+        <span class="text-brand-gold" data-en="FOOD, DONE RIGHT" data-fr="DU QUÉBEC">FOOD, DONE RIGHT</span>
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-lg sm:text-xl md:text-2xl text-white/85 font-body max-w-2xl mx-auto mb-10 animate-fade-in-up"
+         style="animation-delay:0.2s; animation-fill-mode: backwards;"
+         data-en="Poutine, smash burgers, and classic steamies — made fresh, served fast. Your next meal is one click away."
+         data-fr="Poutine, smash burgers et steamies classiques — faits frais, servis vite. Votre prochain repas est à un clic.">
+        Poutine, smash burgers, and classic steamies — made fresh, served fast. Your next meal is one click away.
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fade-in-up" style="animation-delay:0.3s; animation-fill-mode: backwards;">
+        <!-- Primary CTA — Lightspeed -->
+        <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+           class="cta-glow bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-heading font-bold uppercase text-lg sm:text-xl tracking-wide px-10 py-4 rounded-xl transition-all hover:scale-105 w-full sm:w-auto">
+          🛒 <span data-en="Order Online" data-fr="Commander en Ligne">Order Online</span>
+        </a>
+        <!-- Secondary CTA -->
+        <a href="#menu"
+           class="border-2 border-white/40 hover:border-white text-white font-heading font-bold uppercase text-lg tracking-wide px-8 py-4 rounded-xl transition-all hover:bg-white/10 w-full sm:w-auto">
+          <span data-en="View Menu" data-fr="Voir le Menu">View Menu</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block">
+      <svg class="w-6 h-6 text-white/60 animate-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURES / SOCIAL PROOF ═══ -->
+  <section id="features" class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section Header -->
+      <div class="text-center mb-16 reveal">
+        <p class="font-heading text-brand-red uppercase tracking-widest text-sm font-bold mb-2"
+           data-en="Why Bellepro's Laval" data-fr="Pourquoi Bellepro's Laval">Why Bellepro's Laval</p>
+        <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-brand-charcoal leading-tight"
+            data-en="BUILT FOR SPEED. MADE WITH PRIDE." data-fr="CONÇU POUR LA VITESSE. FIÈREMENT PRÉPARÉ.">
+          BUILT FOR SPEED. MADE WITH PRIDE.
+        </h2>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+
+        <!-- Card 1: Speed -->
+        <div class="reveal bg-brand-cream rounded-2xl p-8 border border-brand-cream-dark hover:border-brand-gold transition-all hover:shadow-xl group">
+          <div class="w-14 h-14 bg-brand-red rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-brand-charcoal mb-3 uppercase" data-en="Lightning Fast" data-fr="Ultra Rapide">Lightning Fast</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Order ahead, skip the line. Most orders ready in under 15 minutes." data-fr="Commandez d'avance, sautez la file. La plupart des commandes prêtes en moins de 15 minutes.">Order ahead, skip the line. Most orders ready in under 15 minutes.</p>
+        </div>
+
+        <!-- Card 2: Fresh Ingredients -->
+        <div class="reveal bg-brand-cream rounded-2xl p-8 border border-brand-cream-dark hover:border-brand-gold transition-all hover:shadow-xl group" style="transition-delay: 0.1s;">
+          <div class="w-14 h-14 bg-brand-gold rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-7 h-7 text-brand-charcoal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-brand-charcoal mb-3 uppercase" data-en="Always Fresh" data-fr="Toujours Frais">Always Fresh</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Hand-cut fries, real Quebec cheese curds, and never-frozen beef. Quality you can taste." data-fr="Frites coupées à la main, vrais fromages en grains du Québec et bœuf jamais congelé.">Hand-cut fries, real Quebec cheese curds, and never-frozen beef. Quality you can taste.</p>
+        </div>
+
+        <!-- Card 3: Local Heritage -->
+        <div class="reveal bg-brand-cream rounded-2xl p-8 border border-brand-cream-dark hover:border-brand-gold transition-all hover:shadow-xl group" style="transition-delay: 0.2s;">
+          <div class="w-14 h-14 bg-brand-charcoal rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-7 h-7 text-brand-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-brand-charcoal mb-3 uppercase" data-en="QC Heritage" data-fr="Patrimoine QC">QC Heritage</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Authentic Quebec recipes passed down and perfected. Poutine the way it was meant to be." data-fr="Recettes authentiques du Québec, transmises et perfectionnées. La poutine comme elle devrait être.">Authentic Quebec recipes passed down and perfected. Poutine the way it was meant to be.</p>
+        </div>
+
+        <!-- Card 4: Easy Parking -->
+        <div class="reveal bg-brand-cream rounded-2xl p-8 border border-brand-cream-dark hover:border-brand-gold transition-all hover:shadow-xl group" style="transition-delay: 0.3s;">
+          <div class="w-14 h-14 bg-brand-red-dark rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-brand-charcoal mb-3 uppercase" data-en="Easy Pickup" data-fr="Ramassage Facile">Easy Pickup</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Free parking, steps from Exit 440. Grab your order and go — no hassle." data-fr="Stationnement gratuit, à deux pas de la sortie 440. Prenez votre commande et partez.">Free parking, steps from Exit 440. Grab your order and go — no hassle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MENU PREVIEW ═══ -->
+  <section id="menu" class="py-20 md:py-28 bg-brand-charcoal relative overflow-hidden">
+    <!-- Decorative background texture -->
+    <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,<svg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;><circle cx=&quot;30&quot; cy=&quot;30&quot; r=&quot;2&quot; fill=&quot;white&quot;/></svg>');"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16 reveal">
+        <p class="font-heading text-brand-gold uppercase tracking-widest text-sm font-bold mb-2"
+           data-en="The Menu" data-fr="Le Menu">The Menu</p>
+        <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-white leading-tight"
+            data-en="CROWD FAVOURITES" data-fr="FAVORIS DE LA CROWD">
+          CROWD FAVOURITES
+        </h2>
+        <p class="text-white/60 mt-4 max-w-xl mx-auto"
+           data-en="Tap any category to see the full menu and order in seconds."
+           data-fr="Cliquez sur une catégorie pour voir le menu complet et commander en secondes.">
+          Tap any category to see the full menu and order in seconds.
+        </p>
+      </div>
+
+      <!-- Menu Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+
+        <!-- Poutine -->
+        <div class="menu-card reveal bg-brand-charcoal-light rounded-2xl overflow-hidden border border-white/5">
+          <div class="relative h-56 sm:h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=600&q=80"
+                 alt="Quebec poutine" class="menu-img w-full h-full object-cover" loading="lazy" />
+            <div class="absolute top-3 left-3 bg-brand-red text-white font-heading text-xs uppercase tracking-wide px-3 py-1 rounded-full font-bold">
+              <span data-en="Signature" data-fr="Signature">Signature</span>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl text-white mb-2" data-en="POUTINE" data-fr="POUTINE">POUTINE</h3>
+            <p class="text-white/60 text-sm mb-5" data-en="Hand-cut fries, squeaky cheese curds, and rich hot gravy. The real deal." data-fr="Frites coupées à la main, fromage en grains couinant et sauce brûlante.">Hand-cut fries, squeaky curds, and rich hot gravy. The real deal.</p>
+            <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-brand-red hover:bg-brand-red-light text-white font-heading font-bold uppercase text-sm tracking-wide py-3 rounded-lg transition-all hover:scale-[1.03]">
+              <span data-en="Order Poutine" data-fr="Commander la Poutine">Order Poutine</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Burgers -->
+        <div class="menu-card reveal bg-brand-charcoal-light rounded-2xl overflow-hidden border border-white/5" style="transition-delay: 0.1s;">
+          <div class="relative h-56 sm:h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80"
+                 alt="Smash burger" class="menu-img w-full h-full object-cover" loading="lazy" />
+            <div class="absolute top-3 left-3 bg-brand-gold text-brand-charcoal font-heading text-xs uppercase tracking-wide px-3 py-1 rounded-full font-bold">
+              <span data-en="Fan Favourite" data-fr="Préféré des Fans">Fan Favourite</span>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl text-white mb-2" data-en="SMASH BURGERS" data-fr="SMASH BURGERS">SMASH BURGERS</h3>
+            <p class="text-white/60 text-sm mb-5" data-en="Crispy-edged patties, melted cheese, toasted brioche. Smashed to perfection." data-fr="Galette croustillante, fromage fondu, brioche grillée. Écrasée à la perfection.">Crispy-edged patties, melted cheese, toasted brioche. Smashed to perfection.</p>
+            <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-brand-red hover:bg-brand-red-light text-white font-heading font-bold uppercase text-sm tracking-wide py-3 rounded-lg transition-all hover:scale-[1.03]">
+              <span data-en="Order Burgers" data-fr="Commander les Burgers">Order Burgers</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Smoked Meat -->
+        <div class="menu-card reveal bg-brand-charcoal-light rounded-2xl overflow-hidden border border-white/5" style="transition-delay: 0.2s;">
+          <div class="relative h-56 sm:h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1619472659050-89116301ce66?w=600&q=80"
+                 alt="Smoked meat sandwich" class="menu-img w-full h-full object-cover" loading="lazy" />
+            <div class="absolute top-3 left-3 bg-brand-red text-white font-heading text-xs uppercase tracking-wide px-3 py-1 rounded-full font-bold">
+              <span data-en="Montreal Classic" data-fr="Classique Montréal">Montreal Classic</span>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl text-white mb-2" data-en="SMOKED MEAT" data-fr="SMOKED MEAT">SMOKED MEAT</h3>
+            <p class="text-white/60 text-sm mb-5" data-en="Hand-sliced, juicy Montreal-style smoked meat piled high. A true Quebec deli experience." data-fr="Viande fumée tranchée à la main, juteuse, style Montréal. Une vraie expérience charcuterie québécoise.">Hand-sliced, juicy Montreal-style smoked meat piled high.</p>
+            <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-brand-red hover:bg-brand-red-light text-white font-heading font-bold uppercase text-sm tracking-wide py-3 rounded-lg transition-all hover:scale-[1.03]">
+              <span data-en="Order Smoked Meat" data-fr="Commander le Smoked Meat">Order Smoked Meat</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Hot Dogs / Steamies -->
+        <div class="menu-card reveal bg-brand-charcoal-light rounded-2xl overflow-hidden border border-white/5" style="transition-delay: 0.3s;">
+          <div class="relative h-56 sm:h-48 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1612392987200-1ee1c24ed22c?w=600&q=80"
+                 alt="Classic steamie hot dog" class="menu-img w-full h-full object-cover" loading="lazy" />
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl text-white mb-2" data-en="HOT DOGS & STEAMIES" data-fr="HOT DOGS & STEAMIES">HOT DOGS & STEAMIES</h3>
+            <p class="text-white/60 text-sm mb-5" data-en="Montreal-style steamed hot dogs on soft buns, toasted hot dogs, and more. A Quebec classic done right." data-fr="Hot dogs vapeur style Montréal, hot dogs toastés, et plus. Un classique du Québec.">Montreal-style steamed dogs on soft buns, toasted hot dogs, and more. A Quebec classic done right.</p>
+            <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+               class="flex items-center justify-center gap-2 w-full bg-brand-red hover:bg-brand-red-light text-white font-heading font-bold uppercase text-sm tracking-wide py-3 rounded-lg transition-all hover:scale-[1.03]">
+              <span data-en="Order Hot Dogs" data-fr="Commander les Hot Dogs">Order Hot Dogs</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Full Menu CTA -->
+      <div class="text-center mt-14 reveal">
+        <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-3 bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-heading font-bold uppercase text-lg tracking-wide px-10 py-4 rounded-xl transition-all hover:scale-105 shadow-xl">
+          <span data-en="View Full Menu & Order" data-fr="Voir le Menu Complet & Commander">View Full Menu & Order</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ SECTION ═══ -->
+  <section id="faq" class="py-20 md:py-28 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16 reveal">
+        <p class="font-heading text-brand-red uppercase tracking-widest text-sm font-bold mb-2"
+           data-en="Got Questions?" data-fr="Des Questions?">Got Questions?</p>
+        <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-brand-charcoal leading-tight"
+            data-en="FREQUENTLY ASKED QUESTIONS" data-fr="QUESTIONS FRÉQUEMMENT POSÉES">
+          FREQUENTLY ASKED QUESTIONS
+        </h2>
+      </div>
+
+      <!-- FAQ Items -->
+      <div class="space-y-6">
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="What is the best poutine in Laval?" data-fr="Quelle est la meilleure poutine à Laval?">Quelle est la meilleure poutine à Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Bellepro's Laval offers the best poutine in Laval with fresh Quebec cheese curds, golden fries, and a rich homemade gravy prepared fresh daily. Come discover why our customers love us on Autoroute 440." data-fr="Bellepro's Laval offre la meilleure poutine de Laval avec des curds frais de fromagerie québécoise, des frites dorées, et une sauce maison préparée fraîche chaque jour. Venez découvrir pourquoi nos clients nous adorent sur l'autoroute 440."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.05s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="Where to eat late-night poutine in Laval?" data-fr="Où manger une poutine tard le soir à Laval?">Où manger une poutine tard le soir à Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Bellepro's Laval, located at 5600 Boulevard Robert-Bourassa, Laval, QC, is open until 11 PM on weekdays and midnight on Fridays and Saturdays. It's the ideal spot for late-night poutine or fast food on Autoroute 440. Delivery also available via DoorDash." data-fr="Bellepro's Laval, situé au 5600 Boulevard Robert-Bourassa, Laval, QC, est ouvert jusqu'à 23h en semaine et minuit les vendredis et samedis. C'est l'endroit idéal pour une poutine ou un casse-croûte tard le soir sur l'autoroute 440. Livraison également disponible sur DoorDash."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.1s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="What fast food is open late on Autoroute 440?" data-fr="Quel casse-croûte est ouvert tard sur l'autoroute 440?">Quel casse-croûte est ouvert tard sur l'autoroute 440?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Bellepro's Laval is your go-to fast food spot on Autoroute 440, open late to satisfy your cravings. Enjoy our burgers, poutines, hot dogs, and more, with extended hours on weekends." data-fr="Bellepro's Laval est votre casse-croûte de choix sur l'autoroute 440, ouvert tard pour satisfaire vos envies. Profitez de nos burgers, poutines, hot dogs et plus, avec des heures prolongées les week-ends."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.15s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="Where to find Montreal-style smoked meat in Laval?" data-fr="Où trouver du smoked meat style Montréal à Laval?">Où trouver du smoked meat style Montréal à Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="For authentic Montreal-style smoked meat in Laval, look no further than Bellepro's Laval. Our sandwiches are prepared with hand-sliced smoked meat, for an unforgettable culinary experience." data-fr="Pour un smoked meat authentique style Montréal à Laval, ne cherchez pas plus loin que Bellepro's Laval. Nos sandwiches sont préparés avec de la viande fumée tranchée à la main, pour une expérience gustative inoubliable."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.2s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="Which restaurant delivers poutine on DoorDash in Laval?" data-fr="Quel restaurant livre de la poutine sur DoorDash à Laval?">Quel restaurant livre de la poutine sur DoorDash à Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Bellepro's Laval delivers delicious poutine and all your favorite dishes directly to your door via DoorDash. Order easily online for fast delivery across Laval: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/" data-fr="Bellepro's Laval livre de la délicieuse poutine et tous vos plats préférés directement à votre porte via DoorDash. Commandez facilement en ligne pour une livraison rapide à travers Laval: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/"></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.25s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="What are the best smash burgers in Laval?" data-fr="Quels sont les meilleurs burgers smash à Laval?">Quels sont les meilleurs burgers smash à Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Bellepro's Laval is renowned for its smash burgers in Laval. Crispy patties, melted cheese, and fresh toppings, served on a perfectly toasted brioche bun. The perfect smash burger awaits you." data-fr="Bellepro's Laval est réputé pour ses burgers smash à Laval. Des galettes croustillantes, du fromage fondant et des garnitures fraîches, servis sur un pain brioché grillé à la perfection. Le burger smash parfait vous attend."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.3s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="Where to eat a good sub in Laval?" data-fr="Où manger un bon sous-marin à Laval?">Où manger un bon sous-marin à Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="For a delicious sub in Laval, visit Bellepro's Laval. We offer a variety of classic and special subs, prepared with fresh, quality ingredients, perfect for a quick and tasty meal." data-fr="Pour un sous-marin savoureux à Laval, visitez Bellepro's Laval. Nous proposons une variété de sous-marins classiques et spéciaux, préparés avec des ingrédients frais et de qualité, parfaits pour un repas rapide et délicieux."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.35s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="What's on the menu at Bellepro's Laval?" data-fr="Bellepro's Laval propose quoi au menu?">Bellepro's Laval propose quoi au menu?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="The menu at Bellepro's Laval is extensive and includes various poutines, smash burgers, smoked meat, classic hot dogs (steamies, toasties), gyros, pogos, and more. There's something for everyone, always prepared with fresh ingredients." data-fr="Le menu de Bellepro's Laval est vaste et inclut des poutines variées, des burgers smash, du smoked meat, des hot dogs classiques (steamies, toasties), des gyros, des pogos et plus encore. Il y en a pour tous les goûts, toujours préparé avec des ingrédients frais."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.4s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="What are the opening hours for Bellepro's Laval?" data-fr="Quelles sont les heures d'ouverture de Bellepro's Laval?">Quelles sont les heures d'ouverture de Bellepro's Laval?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Bellepro's Laval is open 7 days a week. From Monday to Thursday and Sunday, we are open from 10:30 AM to 11:00 PM. On Fridays and Saturdays, enjoy our extended services until midnight (11:59 PM)." data-fr="Bellepro's Laval est ouvert 7 jours sur 7. Du lundi au jeudi et le dimanche, nous sommes ouverts de 10h30 à 23h00. Les vendredis et samedis, profitez de nos services prolongés jusqu'à minuit (23h59)."></p>
+        </div>
+        <div class="reveal bg-brand-cream rounded-xl p-6 border border-brand-cream-dark" style="transition-delay: 0.45s;">
+          <h3 class="font-heading font-bold text-lg text-brand-charcoal mb-2" data-en="Does Bellepro's Laval offer delivery?" data-fr="Bellepro's Laval offre-t-il la livraison?">Bellepro's Laval offre-t-il la livraison?</h3>
+          <p class="text-brand-charcoal/70 text-sm leading-relaxed" data-en="Yes, Bellepro's Laval offers home delivery via DoorDash. You can order directly from our online menu on DoorDash and have your favorite dishes delivered quickly in Laval: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/" data-fr="Oui, Bellepro's Laval offre la livraison à domicile via DoorDash. Vous pouvez commander directement depuis notre menu en ligne sur DoorDash et vous faire livrer vos plats préférés rapidement à Laval: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ LOCATION & HOURS ═══ -->
+  <section id="location" class="py-20 md:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section Header -->
+      <div class="text-center mb-16 reveal">
+        <p class="font-heading text-brand-red uppercase tracking-widest text-sm font-bold mb-2"
+           data-en="Visit Us" data-fr="Visitez-Nous">Visit Us</p>
+        <h2 class="font-display text-4xl sm:text-5xl md:text-6xl text-brand-charcoal"
+            data-en="FIND US ON THE 440" data-fr="VENEZ NOUS VOIR SUR LE 440">
+          FIND US ON THE 440
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
+
+        <!-- Info Panel -->
+        <div class="reveal space-y-8">
+
+          <!-- Address -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-brand-red rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-lg text-brand-charcoal uppercase mb-1" data-en="Address" data-fr="Adresse">Address</h3>
+              <p class="text-brand-charcoal/70">5600 Boulevard Robert-Bourassa<br/>Laval, QC H7E 0A1</p>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=5600+Boulevard+Robert-Bourassa+Laval+QC" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-1 text-brand-red font-semibold text-sm mt-2 hover:text-brand-red-dark transition-colors">
+                <span data-en="Get Directions →" data-fr="Itinéraire →">Get Directions →</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-brand-gold rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-brand-charcoal" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-lg text-brand-charcoal uppercase mb-1" data-en="Phone" data-fr="Téléphone">Phone</h3>
+              <a href="tel:+15145737441" class="text-brand-charcoal/70 hover:text-brand-red transition-colors text-lg font-semibold">(514) 573-7441</a>
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-brand-charcoal rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-brand-gold" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-heading font-bold text-lg text-brand-charcoal uppercase mb-3" data-en="Hours" data-fr="Heures">Hours</h3>
+              <table class="w-full text-sm">
+                <tbody class="divide-y divide-brand-cream-dark">
+                  <tr>
+                    <td class="py-2 text-brand-charcoal/70 font-medium" data-en="Monday – Thursday" data-fr="Lundi – Jeudi">Monday – Thursday</td>
+                    <td class="py-2 text-right text-brand-charcoal font-semibold">10:30 AM – 11:00 PM</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-brand-charcoal/70 font-medium" data-en="Friday – Saturday" data-fr="Vendredi – Samedi">Friday – Saturday</td>
+                    <td class="py-2 text-right text-brand-charcoal font-semibold">10:30 AM – 12:00 AM</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-brand-charcoal/70 font-medium" data-en="Sunday" data-fr="Dimanche">Sunday</td>
+                    <td class="py-2 text-right text-brand-charcoal font-semibold">10:30 AM – 11:00 PM</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Order CTA -->
+          <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+             class="flex items-center justify-center gap-2 w-full sm:w-auto bg-brand-red hover:bg-brand-red-dark text-white font-heading font-bold uppercase text-lg tracking-wide px-10 py-4 rounded-xl transition-all hover:scale-[1.02] shadow-lg">
+            <span data-en="Order for Pickup" data-fr="Commander pour Ramassage">Order for Pickup</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+
+        <!-- Map -->
+        <div class="reveal rounded-2xl overflow-hidden shadow-2xl min-h-[400px] lg:min-h-full border-4 border-brand-cream-dark">
+          <iframe
+            src="https://maps.google.com/maps?q=5600%20Boulevard%20Robert-Bourassa%20Laval%20QC&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            class="w-full h-full min-h-[400px]"
+            style="border:0;"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Bellepro's Laval Location Map">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="bg-brand-charcoal text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Footer CTA Banner -->
+      <div class="text-center mb-12 pb-12 border-b border-white/10">
+        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl text-white mb-4"
+            data-en="HUNGRY YET?" data-fr="FAIM?">
+          HUNGRY YET?
+        </h2>
+        <a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-heading font-bold uppercase text-lg tracking-wide px-10 py-4 rounded-xl transition-all hover:scale-105 shadow-xl">
+          🛒 <span data-en="Order Online Now" data-fr="Commander Maintenant">Order Online Now</span>
+        </a>
+      </div>
+
+      <!-- Footer Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8 text-sm">
+        <!-- Brand -->
+        <div>
+          <h3 class="font-display text-2xl mb-3">
+            <span class="text-white">BELLEPRO'S</span>
+            <span class="text-brand-gold">LAVAL</span>
+          </h3>
+          <p class="text-white/50" data-en="Quebec comfort food, served fast. Right off the 440 in Laval." data-fr="Cuisine réconfort du Québec, servie vite. Directement sur le 440 à Laval.">Quebec comfort food, served fast. Right off the 440 in Laval.</p>
+        </div>
+        <!-- Links -->
+        <div>
+          <h4 class="font-heading font-bold uppercase text-brand-gold mb-3" data-en="Quick Links" data-fr="Liens Rapides">Quick Links</h4>
+          <ul class="space-y-2 text-white/60">
+            <li><a href="#features" class="hover:text-brand-gold transition-colors" data-en="Why Us" data-fr="Pourquoi Nous">Why Us</a></li>
+            <li><a href="#menu" class="hover:text-brand-gold transition-colors" data-en="Menu" data-fr="Menu">Menu</a></li>
+            <li><a href="#faq" class="hover:text-brand-gold transition-colors" data-en="FAQ" data-fr="FAQ">FAQ</a></li>
+            <li><a href="#location" class="hover:text-brand-gold transition-colors" data-en="Find Us" data-fr="Nous Trouver">Find Us</a></li>
+            <li><a href="https://mylightspeed.app/XURCMOEX/C-ordering/menu" target="_blank" rel="noopener noreferrer" class="hover:text-brand-gold transition-colors" data-en="Order Online" data-fr="Commander">Order Online</a></li>
+          </ul>
+        </div>
+        <!-- Contact -->
+        <div>
+          <h4 class="font-heading font-bold uppercase text-brand-gold mb-3" data-en="Contact" data-fr="Contact">Contact</h4>
+          <p class="text-white/60">5600 Boulevard Robert-Bourassa<br/>Laval, QC H7E 0A1</p>
+          <a href="tel:+15145737441" class="text-white/60 hover:text-brand-gold transition-colors block mt-2">(514) 573-7441</a>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/40">
+        <p>© 2026 Bellepro's Laval. <span data-en="All rights reserved." data-fr="Tous droits réservés.">All rights reserved.</span></p>
+        <p class="font-heading uppercase tracking-wide" data-en="Poutine • Burgers • Smoked Meat • Hot Dogs" data-fr="Poutine • Burgers • Smoked Meat • Hot Dogs">Poutine • Burgers • Smoked Meat • Hot Dogs</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ JAVASCRIPT ═══ -->
+  <script>
+    // ── Mobile Nav Toggle ──
+    const hamburger  = document.getElementById('hamburger');
+    const mobileNav  = document.getElementById('mobile-nav');
+    const iconOpen   = document.getElementById('icon-open');
+    const iconClose  = document.getElementById('icon-close');
+
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+      iconOpen.classList.toggle('hidden');
+      iconClose.classList.toggle('hidden');
+    });
+
+    // Close mobile nav when a link is tapped
+    mobileNav.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('open');
+        iconOpen.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+      });
+    });
+
+    // ── Navbar Scroll Shadow ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ── Bilingual Toggle (EN / FR) ──
+    const ORDER_URL = 'https://mylightspeed.app/XURCMOEX/C-ordering/menu';
+
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.documentElement.dataset.lang = lang;
+
+      // Swap every element with data-en / data-fr
+      document.querySelectorAll('[data-en][data-fr]').forEach(el => {
+        el.textContent = el.dataset[lang];
+      });
+
+      // Update toggle visual state
+      const enSpan = document.getElementById('lang-en');
+      const frSpan = document.getElementById('lang-fr');
+      const enSpanM = document.querySelector('.lang-en-m');
+      const frSpanM = document.querySelector('.lang-fr-m');
+
+      if (lang === 'en') {
+        enSpan?.classList.replace('text-white/60', 'text-brand-gold');
+        frSpan?.classList.replace('text-brand-gold', 'text-white/60');
+        enSpanM?.classList.replace('text-white/60', 'text-brand-gold');
+        frSpanM?.classList.replace('text-brand-gold', 'text-white/60');
+      } else {
+        enSpan?.classList.replace('text-brand-gold', 'text-white/60');
+        frSpan?.classList.replace('text-white/60', 'text-brand-gold');
+        enSpanM?.classList.replace('text-brand-gold', 'text-white/60');
+        frSpanM?.classList.replace('text-white/60', 'text-brand-gold');
+      }
+
+      // Persist choice
+      try { localStorage.setItem('bellepros-lang', lang); } catch(e) {}
+    }
+
+    // Wire up toggles
+    let currentLang = 'en';
+    document.getElementById('lang-toggle')?.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'fr' : 'en';
+      setLang(currentLang);
+    });
+    document.getElementById('lang-toggle-mobile')?.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'fr' : 'en';
+      setLang(currentLang);
+    });
+
+    // Restore saved language
+    try {
+      const saved = localStorage.getItem('bellepros-lang');
+      if (saved === 'fr') {
+        currentLang = 'fr';
+        setLang('fr');
+      }
+    } catch(e) {}
+
+    // ── Scroll Reveal (Intersection Observer) ──
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

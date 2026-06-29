@@ -1,0 +1,25 @@
+# Bellepro's Laval
+
+> Bellepro's Laval is a Quebec quick-service restaurant (casse-croûte) located on Autoroute 440 in Laval, Quebec, Canada. Serving poutine, burgers, smoked meat, sous-marins, hot dogs, gyros, and pogos since [year]. Part of Groupe La Belle Province.
+
+## Menu
+- Poutine (Classique, Italienne, Toute Garnie, Bacon, Viande Fumée)
+- Burgers (Hamburger, Bellepros Deluxe, Philly Steak Burger)
+- Smoked Meat sandwich (hand-sliced, Montreal-style)
+- Sous-Marins (Classique, Super Sub Spécial, Philly Steak)
+- Hot Dogs (Steamie, Toastie, Michigan, Bacon Cheese Dog)
+- Pogos (corn dogs)
+- Gyros / Pitas
+- Frites, Rondelles d'Oignons
+
+## Location
+5600 Boulevard Robert-Bourassa, Laval, QC H7E 0A1
+Phone: (514) 573-7441
+Hours: 10h30 - 23h00 (Lun-Jeu, Dim), 10h30 - 23h59 (Ven-Sam)
+
+## Ordering
+- In-store: 5600 Boulevard Robert-Bourassa, Laval, QC H7E 0A1
+- Delivery: https://www.doordash.com/en/store/belle-pros-laval-635442/75877747/
+
+## About
+Bellepro's Laval is operated by Constantin, a Quebec restaurateur with 30+ years in the food-service industry. The restaurant is known for fresh, never-frozen poutine with squeaky cheese curds from local fromageries, hand-sliced smoked meat, and smash burgers on a flat-top grill.
